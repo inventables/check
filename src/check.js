@@ -1,9 +1,11 @@
 var esprima = require('esprima');
 
-var check = function(value, checker) {
+var check = function() {
+  var checker = arguments[arguments.length - 1];
   if (typeof checker !== 'function') {
-    throw new Error('Expected function as second argument to `check`, got ' + (typeof checker));
+    throw new Error('Expected function as last argument to `check`, got ' + (typeof checker));
   }
+  var values = [].slice.call(arguments, 0, arguments.length - 1);
   var parsed = esprima.parse('(' + checker.toString() + ');');
   var funcExpression = parsed.body[0].expression;
   var funcParams = funcExpression.params;
