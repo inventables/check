@@ -17,19 +17,29 @@ var check = function() {
       var expressionString = parserInput.substring(expression.range[0], expression.range[1]);
       return [
         'if (' + expressionString + ') {',
-        '  console.log("Yay! " + ' + JSON.stringify(expressionString) + ');',
+        '  pass(' + JSON.stringify(expressionString) + ');',
         '} else {',
-        '  console.log("Oops! Expected " + ' + JSON.stringify(expressionString) + ');',
+        '  fail(' + JSON.stringify(expressionString) + ');',
         '}'
       ].join('\n');
     }
   };
 
-  checker = eval([].concat(
-    '(function (' + checkerFunctionExpression.params.map(function(param) { return param.name }).join(', ') + ') {',
+  var checkerParamNames = checkerFunctionExpression.params.map(function(param) { return param.name });
+  var runner = eval([].concat(
+    '(function(pass, fail) { return function (' + checkerParamNames.join(', ') + ') {',
     checkerStatements.map(rephraseAsCheckWithLogging),
-    '})'
+    '}; })'
   ).join('\n'));
+
+  var pass = function(expressionString) {
+    console.log('Yay! ' + expressionString);
+  };
+  var fail = function(expressionString) {
+    console.log('Oops! Expected ' + expressionString);
+  };
+
+  checker = runner(pass, fail);
   checker.apply(this, values);
 };
 
