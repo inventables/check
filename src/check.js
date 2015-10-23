@@ -32,15 +32,28 @@ var check = function() {
     '}; })'
   ).join('\n'));
 
-  var pass = function(expressionString) {
-    console.log('Yay! ' + expressionString);
-  };
+  var failures = [];
+  var pass = function(expressionString) {};
   var fail = function(expressionString) {
-    console.log('Oops! Expected ' + expressionString);
+    failures.push(expressionString);
   };
 
   checker = runner(pass, fail);
   checker.apply(this, values);
+
+  if (failures.length === 0) {
+    console.log('Everything was beautiful and nothing hurt.');
+  } else {
+    console.log('Got:');
+    for (var index = 0; index < checkerParamNames.length; index++) {
+      console.log('  ' + checkerParamNames[index] + ' = ' + JSON.stringify(values[index]));
+    }
+    console.log('Expected:');
+    failures.forEach(function(failure) {
+      console.log('  ' + failure);
+    });
+  }
+  console.log();
 };
 
 var getExpression = function(statement) {
