@@ -18,6 +18,17 @@ Rephraser.prototype = {
     ].join('\n');
   },
 
+  rephraseIfStatement: function(statement) {
+    var testExpressionString = this.inputForNode(statement.test);
+    return [
+      'if (' + testExpressionString + ') {',
+      this.rephraseStatement(statement.consequent),
+      '} else {',
+      this.rephraseStatement(statement.alternate /* can be null */),
+      '}'
+    ].join('\n');
+  },
+
   rephraseReturnStatement: function(statement) {
     var expressionString = this.inputForNode(statement.argument);
     return [
@@ -30,9 +41,14 @@ Rephraser.prototype = {
   },
 
   rephraseStatement: function(statement) {
+    if (!statement) {
+      return;
+    }
     switch (statement.type) {
       case 'ExpressionStatement':
         return this.rephraseExpressionStatement(statement);
+      case 'IfStatement':
+        return this.rephraseIfStatement(statement);
       case 'ReturnStatement':
         return this.rephraseReturnStatement(statement);
       default:
