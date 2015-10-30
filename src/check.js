@@ -16,33 +16,24 @@ var check = function() {
 
   var checkerParamNames = checkerFunctionExpression.params.map(function(param) { return param.name });
   var runner = eval([].concat(
-    '(function(pass, fail) { return function(' + checkerParamNames.join(', ') + ') {',
+    '(function(assert) { return function checker(' + checkerParamNames.join(', ') + ') {',
     checkerStatements.map(rephraser.rephraseStatement.bind(rephraser)),
     '}; })'
   ).join('\n'));
 
   var failures = [];
-  var pass = function(expressionString) {};
-  var fail = function(expressionString) {
-    failures.push(expressionString);
+  var assert = function(condition, message) {
+    if (!condition) {
+      throw new Error('Expected ' + message);
+    }
   };
 
-  checker = runner(pass, fail);
-  checker.apply(this, values);
-
-  if (failures.length === 0) {
-    console.log('Everything was beautiful and nothing hurt.');
-  } else {
-    console.log('Got:');
-    for (var index = 0; index < checkerParamNames.length; index++) {
-      console.log('  ' + checkerParamNames[index] + ' = ' + JSON.stringify(values[index]));
-    }
-    console.log('Expected:');
-    failures.forEach(function(failure) {
-      console.log('  ' + failure);
-    });
+  try {
+    checker = runner(assert);
+    checker.apply(this, values);
+  } catch (e) {
+    throw new Error(e.message);
   }
-  console.log();
 };
 
 module.exports = check;

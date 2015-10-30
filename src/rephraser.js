@@ -9,13 +9,7 @@ Rephraser.prototype = {
 
   rephraseExpressionStatement: function(statement) {
     var expressionString = this.inputForNode(statement.expression);
-    return [
-      'if (' + expressionString + ') {',
-      '  pass(' + JSON.stringify(expressionString) + ');',
-      '} else {',
-      '  fail(' + JSON.stringify(expressionString) + ');',
-      '}'
-    ].join('\n');
+    return 'assert(' + expressionString + ', ' + JSON.stringify(expressionString) + ');';
   },
 
   rephraseIfStatement: function(statement) {
@@ -31,13 +25,7 @@ Rephraser.prototype = {
 
   rephraseReturnStatement: function(statement) {
     var expressionString = this.inputForNode(statement.argument);
-    return [
-      'if (' + expressionString + ') {',
-      '  pass(' + JSON.stringify(expressionString) + ');',
-      '} else {',
-      '  fail(' + JSON.stringify(expressionString) + ');',
-      '}'
-    ].join('\n');
+    return 'assert(' + expressionString + ', ' + JSON.stringify(expressionString) + ');';
   },
 
   rephraseWhileStatement: function(statement) {
