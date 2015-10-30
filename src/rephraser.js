@@ -7,6 +7,14 @@ Rephraser.prototype = {
     return this.inputString.substring(node.range[0], node.range[1]);
   },
 
+  rephraseBlockStatement: function(statement) {
+    return [
+      '{',
+      statement.body.map(this.rephraseStatement.bind(this)).join('\n'),
+      '}'
+    ].join('\n');
+  },
+
   rephraseExpressionStatement: function(statement) {
     var expressionString = this.inputForNode(statement.expression);
     return 'assert(' + expressionString + ', ' + JSON.stringify(expressionString) + ');';
@@ -42,6 +50,8 @@ Rephraser.prototype = {
       return;
     }
     switch (statement.type) {
+      case 'BlockStatement':
+        return this.rephraseBlockStatement(statement);
       case 'ExpressionStatement':
         return this.rephraseExpressionStatement(statement);
       case 'IfStatement':
