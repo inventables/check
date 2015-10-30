@@ -40,6 +40,15 @@ Rephraser.prototype = {
     ].join('\n');
   },
 
+  rephraseWhileStatement: function(statement) {
+    var testExpressionString = this.inputForNode(statement.test);
+    return [
+      'while (' + testExpressionString + ') {',
+      this.rephraseStatement(statement.body),
+      '}'
+    ].join('\n');
+  },
+
   rephraseStatement: function(statement) {
     if (!statement) {
       return;
@@ -51,6 +60,8 @@ Rephraser.prototype = {
         return this.rephraseIfStatement(statement);
       case 'ReturnStatement':
         return this.rephraseReturnStatement(statement);
+      case 'WhileStatement':
+        return this.rephraseWhileStatement(statement);
       default:
         console.log('Ignoring ' + statement.type);
     }
