@@ -60,6 +60,11 @@ Rephraser.prototype = {
         return this.rephraseReturnStatement(statement);
       case 'WhileStatement':
         return this.rephraseWhileStatement(statement);
+      case 'BreakStatement':
+      case 'ContinueStatement':
+      case 'EmptyStatement':
+      case 'VariableDeclaration':
+        return this.inputForNode(statement);
       default:
         console.log('Ignoring ' + statement.type);
     }
