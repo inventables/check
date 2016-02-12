@@ -7,6 +7,11 @@ Rephraser.prototype = {
     return this.inputString.substring(node.range[0], node.range[1]);
   },
 
+  assertExpression: function(expression) {
+    var expressionString = this.inputForNode(expression);
+    return 'assert(' + expressionString + ', ' + JSON.stringify(expressionString) + ');';
+  },
+
   rephraseBlockStatement: function(statement) {
     return [
       '{',
@@ -16,8 +21,7 @@ Rephraser.prototype = {
   },
 
   rephraseExpressionStatement: function(statement) {
-    var expressionString = this.inputForNode(statement.expression);
-    return 'assert(' + expressionString + ', ' + JSON.stringify(expressionString) + ');';
+    return this.assertExpression(statement.expression);
   },
 
   rephraseIfStatement: function(statement) {
@@ -32,8 +36,7 @@ Rephraser.prototype = {
   },
 
   rephraseReturnStatement: function(statement) {
-    var expressionString = this.inputForNode(statement.argument);
-    return 'assert(' + expressionString + ', ' + JSON.stringify(expressionString) + ');';
+    return this.assertExpression(statement.argument);
   },
 
   rephraseWhileStatement: function(statement) {
