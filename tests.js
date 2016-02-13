@@ -11,6 +11,8 @@ var checkError = function(func, message) {
     throw new Error('Expected an error (' + JSON.stringify(message) + ') but no error was thrown');
   } else if (thrown !== message) {
     throw new Error('Expected error ' + JSON.stringify(message) + ', got ' + JSON.stringify(thrown));
+  } else {
+    console.log('.');
   }
 };
 
@@ -21,7 +23,7 @@ checkError(function() {
     value !== true;
     value === 14;
   });
-}, 'Expected value === 14');
+}, 'Expected `value === 14`. Got `value`: false.');
 
 checkError(function() {
   check(true, function(value) {
@@ -30,7 +32,7 @@ checkError(function() {
     !value;
     value === 14;
   });
-}, 'Expected value !== true');
+}, 'Expected `value !== true`. Got `value`: true.');
 
 checkError(function() {
   check(5, function(value) {
@@ -39,7 +41,7 @@ checkError(function() {
     !value;
     value === 14;
   });
-}, 'Expected !value');
+}, 'Expected `!value`. Got `value`: 5.');
 
 checkError(function() {
   check(NaN, function(value) {
@@ -48,7 +50,7 @@ checkError(function() {
     !value;
     value === 14;
   });
-}, 'Expected value === value');
+}, 'Expected `value === value`. Got `value`: NaN.');
 
 checkError(function() {
   check(10, function(value) {
@@ -66,7 +68,7 @@ checkError(function() {
       ({})['abc'];
     }
   });
-}, 'Expected 10 === 0x10');
+}, 'Expected `10 === 0x10`.');
 
 checkError(function() {
   check(10, function(value) {
@@ -79,7 +81,7 @@ checkError(function() {
     else
       [].length >= 1;
   });
-}, 'Expected 10 === 0x10');
+}, 'Expected `10 === 0x10`.');
 
 checkError(function() {
   check(8, function(n) {
@@ -88,7 +90,7 @@ checkError(function() {
       n % 3 > 0;
     }
   });
-}, 'Expected n % 3 > 0');
+}, 'Expected `n % 3 > 0`. Got `n % 3`: 0.');
 
 checkError(function() {
   check(8, function(n) {
@@ -96,4 +98,4 @@ checkError(function() {
       n % 5 > 0;
     n % 3 > 0;
   });
-}, 'Expected n % 5 > 0');
+}, 'Expected `n % 5 > 0`. Got `n % 5`: 0.');

@@ -1,5 +1,8 @@
-function Rephraser(inputString) {
+var ExpressionVisitor = require('./expression_visitor');
+
+function Rephraser(inputString, paramNames) {
   this.inputString = inputString;
+  this.paramNames = paramNames;
 };
 
 Rephraser.prototype = {
@@ -9,7 +12,25 @@ Rephraser.prototype = {
 
   assertExpression: function(expression) {
     var expressionString = this.inputForNode(expression);
-    return 'assert(' + expressionString + ', ' + JSON.stringify(expressionString) + ');';
+    var relevantExpressions = [];
+    var paramNames = this.paramNames;
+    ExpressionVisitor.visit(expression, function(subExpression) {
+      var identifiers = ExpressionVisitor.getIdentifiers(subExpression);
+      var relevant = identifiers.reduce(function(relevant, identifier) { return relevant || (paramNames.indexOf(identifier) >= 0); }, false);
+      if (relevant) {
+        relevantExpressions.push(subExpression);
+      }
+    });
+    var inputForNode = this.inputForNode.bind(this);
+    var seenDescriptions = {};
+    var descriptions = relevantExpressions.map(function(expression) {
+      var input = inputForNode(expression);
+      if (!seenDescriptions[input]) {
+        seenDescriptions[input] = true;
+        return '{ description: ' + JSON.stringify(input) + ', value: ' + input + '}';
+      }
+    }).filter(function(value) { return value; });
+    return 'assert(' + expressionString + ', ' + JSON.stringify(expressionString) + ', [' + descriptions.join(', ') + ']);';
   },
 
   rephraseBlockStatement: function(statement) {
