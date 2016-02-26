@@ -36,9 +36,11 @@ ExpressionVisitor = {
     var identifiers = [];
     var seen = {};
     var identifierCollector = function(expression) {
-      if (expression.type === 'Identifier' && !seen[expression.name]) {
-        identifiers.push(expression.name);
-        seen[expression.name] = true;
+      if (expression.type === 'Identifier') {
+        if (!seen[expression.name]) {
+          identifiers.push(expression.name);
+          seen[expression.name] = true;
+        }
       } else if (expression.type !== 'Literal') {
         ExpressionVisitor.visit(expression, identifierCollector);
       }

@@ -53,6 +53,12 @@ checkError(function() {
 }, 'Expected `value === value`. Got `value`: NaN.');
 
 checkError(function() {
+  check([1, 2, 3], function(values) {
+    values[0] + values[1] + values[2] === 3;
+  });
+}, 'Expected `values[0] + values[1] + values[2] === 3`. Got `values[0] + values[1] + values[2]`: 6.');
+
+checkError(function() {
   check(10, function(value) {
     if (value % 4 === 0) {
       'red' === 'blue';
