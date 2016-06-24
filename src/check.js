@@ -10,13 +10,20 @@ var check = function() {
 
   var parserInput = '(' + checker.toString() + ');';
   var checkerFunctionExpression = esprima.parse(parserInput, { range: true }).body[0].expression;
-  var checkerStatements = checkerFunctionExpression.body.body;
   var checkerParamNames = checkerFunctionExpression.params.map(function(param) { return param.name });
+  var checkerBody = checkerFunctionExpression.body;
 
   var rephraser = new Rephraser(parserInput, checkerParamNames);
+  var runnerStatements;
+  if (checkerBody.type === 'BlockStatement') {
+    runnerStatements = checkerBody.body.map(rephraser.rephraseStatement.bind(rephraser));
+  } else {
+    runnerStatements = [rephraser.assertExpression(checkerBody)];
+  }
+
   var runner = eval([].concat(
     '(function(assert) { return function checker(' + checkerParamNames.join(', ') + ') {',
-    checkerStatements.map(rephraser.rephraseStatement.bind(rephraser)),
+    runnerStatements,
     '}; })'
   ).join('\n'));
 

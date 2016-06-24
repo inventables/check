@@ -16,6 +16,22 @@ var checkError = function(func, message) {
   }
 };
 
+check(5, function(five) { five === 5; });
+check(5, (five) => five === 5);
+check(5, (five) => { five === 5 });
+
+checkError(function() {
+  check(4, function(five) { five === 5; });
+}, 'Expected `five === 5`. Got `five`: 4.');
+
+checkError(function() {
+  check(4, (five) => { five === 5; });
+}, 'Expected `five === 5`. Got `five`: 4.');
+
+checkError(function() {
+  check(4, (five) => five === 5);
+}, 'Expected `five === 5`. Got `five`: 4.');
+
 checkError(function() {
   check(false, function(value) {
     value === value;
